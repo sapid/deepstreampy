@@ -9,13 +9,12 @@ def requirements(filename='requirements.txt'):
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-setup(name='deepstreampy',
-      version='0.1.1',
-      author='Yavor Paunov',
-      author_email='contact@yavorpaunov.com',
-      description='A deepstream.io client.',
+setup(name='deepstreampy-twisted',
+      version='0.2.0',
+      author='Will Crawford',
+      description='A deepstream.io client for Twisted.',
       license='MIT',
-      url='https://www.github.com/YavorPaunov/deepstreampy',
+      url='https://www.github.com/sapid/deepstreampy-twisted',
       packages=find_packages(),
       install_requires=requirements(),
       long_description=read('README.md'),

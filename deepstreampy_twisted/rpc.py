@@ -25,7 +25,7 @@ class RPCResponse(object):
     def __init__(self, connection, name, correlation_id):
         """
         Args:
-            connection (deepstreampy.client._Connection): The current connection
+            connection (deepstreampy_twisted.client._Connection): The current connection
             name (str): The name of the RPC
             correlation_id (str): Correlation ID of the RPC
         """

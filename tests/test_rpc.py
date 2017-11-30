@@ -36,7 +36,7 @@ class RPCHandlerTest(testing.AsyncTestCase):
         self.client_errors = []
         self.client.on('error', self._error_callback)
         get_uid_patcher = mock.patch(
-            'deepstreampy.utils.get_uid', return_value='1')
+            'deepstreampy_twisted.utils.get_uid', return_value='1')
         get_uid_patcher.start()
         self.addCleanup(get_uid_patcher.stop)
 
@@ -181,7 +181,7 @@ class RPCResponseTest(testing.AsyncTestCase):
         self.client_errors = []
         self.client.on('error', self._error_callback)
         get_uid_patcher = mock.patch(
-            'deepstreampy.utils.get_uid', return_value='1')
+            'deepstreampy_twisted.utils.get_uid', return_value='1')
         get_uid_patcher.start()
         self.addCleanup(get_uid_patcher.stop)
 

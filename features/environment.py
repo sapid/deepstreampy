@@ -71,7 +71,7 @@ def _create_server(port, path):
 
 
 def before_all(context):
-    context.uid_patcher = mock.patch("deepstreampy.utils.get_uid",
+    context.uid_patcher = mock.patch("deepstreampy_twisted.utils.get_uid",
                                      return_value="<UID>")
     context.uid_patcher.start()
 

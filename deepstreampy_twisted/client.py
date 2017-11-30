@@ -1,12 +1,12 @@
 from __future__ import absolute_import, division, print_function, with_statement
 from __future__ import unicode_literals
 
-from deepstreampy.message import connection
-from deepstreampy import constants
-from deepstreampy.record import RecordHandler
-from deepstreampy.event import EventHandler
-from deepstreampy.rpc import RPCHandler
-from deepstreampy.presence import PresenceHandler
+from deepstreampy_twisted.message import connection
+from deepstreampy_twisted import constants
+from deepstreampy_twisted.record import RecordHandler
+from deepstreampy_twisted.event import EventHandler
+from deepstreampy_twisted.rpc import RPCHandler
+from deepstreampy_twisted.presence import PresenceHandler
 
 from pyee import EventEmitter
 from tornado import gen
