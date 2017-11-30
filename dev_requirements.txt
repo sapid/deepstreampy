@@ -1,4 +1,4 @@
 pyee==1.0.2
-tornado==4.4
-behave
-mock
+behave>=1.2.5
+mock>=2.0.0
+Twisted>=17.9.0
