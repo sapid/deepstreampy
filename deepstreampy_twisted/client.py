@@ -22,7 +22,7 @@ def connect(url, **options):
 
     Returns:
         tornado.concurrent.Future: A future that resolves with an instance of
-            ``deepstreampy.client.Client`` when a connection is established. If
+            ``deepstreampy_twisted.client.Client`` when a connection is established. If
             the client is unable to connect, the future will have the
             appropriate exception set.
     """
