@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function, with_statement
-from deepstreampy.constants import types
-from deepstreampy.constants import message as message_constants
-from deepstreampy.utils import Undefined
+from deepstreampy_twisted.constants import types
+from deepstreampy_twisted.constants import message as message_constants
+#from deepstreampy_twisted.utils import Undefined
 import sys
 import json
 
@@ -58,8 +58,8 @@ def typed(value):
 
     if value_type in num_types:
         return types.NUMBER + str(value)
-
-    if value is Undefined:
-        return types.UNDEFINED
+    # TODO: Do we need this?
+    #if value is Undefined:
+    #    return types.UNDEFINED
 
     raise ValueError("Can't serialize type {0}".format(value_type))

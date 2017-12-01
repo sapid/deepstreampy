@@ -19,7 +19,7 @@ if sys.version_info[0] < 3:
 else:
     from unittest import mock
 
-URL = "ws://localhost:7777/deepstream"
+URL = "ws://localhost:6020/deepstream"
 
 test_server_exceptions = []
 

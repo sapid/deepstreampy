@@ -1,8 +1,8 @@
 from __future__ import absolute_import, division, print_function, with_statement
 from __future__ import unicode_literals
 
-from deepstreampy.constants import message as message_constants
-from deepstreampy.constants import topic, event, actions, types
+from deepstreampy_twisted.constants import message as message_constants
+from deepstreampy_twisted.constants import topic, event, actions, types
 
 import json
 import sys
@@ -19,6 +19,8 @@ def parse(raw_messages, client):
 
 
 def _parse_message(message, client):
+    # Takes a message with at least 2 parts, action and topic.
+    # Takes a client object to directly raise errors in case of parsing problems.
     parts = message.split(message_constants.MESSAGE_PART_SEPERATOR)
     if len(parts) < 2:
         # A valid message consists of at least 2 parts: action and topic
@@ -39,6 +41,8 @@ def _parse_message(message, client):
 
 
 def convert_typed(value, client):
+    # Takes a message with an prepended type and decodes it to de-jsonified object.
+    # Takes a client object to directly raise errors in case of parsing problems.
     value_type = value[0]
 
     if value_type == types.TRUE:
