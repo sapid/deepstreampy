@@ -10,11 +10,18 @@ from tornado import ioloop, concurrent, websocket, gen
 from collections import deque
 import errno
 import time
+import inspect
 
+
+def debug_p(message):
+    if isinstance(message, str):
+        message = unicode(message, 'utf-8')
+    print(message.replace(chr(31), '|').replace(chr(30), '+'))
 
 class Connection(object):
 
     def __init__(self, client, url, **options):
+        print(inspect.stack()[1][3])
         self._io_loop = ioloop.IOLoop.current()
 
         self._client = client
@@ -54,6 +61,7 @@ class Connection(object):
         self._heartbeat_interval = options.get('heartbeatInterval', 100)
 
     def connect(self, callback=None):
+        print(inspect.stack()[1][3])
         self._connect_callback = callback
 
         connect_future = websocket.websocket_connect(
@@ -65,6 +73,7 @@ class Connection(object):
         return connect_future
 
     def _check_heartbeat(self):
+        print(inspect.stack()[1][3])
         heartbeat_tolerance = self._heartbeat_interval * 2
         elapsed = time.time() - self._last_heartbeat
         if elapsed >= heartbeat_tolerance:
@@ -76,6 +85,7 @@ class Connection(object):
                 self._heartbeat_interval, self._check_heartbeat)
 
     def _on_open(self, f):
+        print(inspect.stack()[1][3])
         exception = f.exception()
         if exception:
             self._connect_error = exception
@@ -96,6 +106,7 @@ class Connection(object):
             self._connect_callback()
 
     def _on_error(self, error):
+        print(inspect.stack()[1][3])
         if self._heartbeat_callback:
             self._io_loop.remove_timeout(self._heartbeat_callback)
         self._set_state(constants.connection_state.ERROR)
@@ -112,12 +123,15 @@ class Connection(object):
                                constants.event.CONNECTION_ERROR, msg)
 
     def start(self):
+        print(inspect.stack()[1][3])
         self._io_loop.start()
 
     def stop(self):
+        print(inspect.stack()[1][3])
         self._io_loop.stop()
 
     def close(self):
+        print(inspect.stack()[1][3])
         if self._heartbeat_callback:
             self._io_loop.remove_timeout(self._heartbeat_callback)
         self._deliberate_close = True
@@ -125,6 +139,7 @@ class Connection(object):
             self._websocket_handler.close()
 
     def authenticate(self, auth_params):
+        print(inspect.stack()[0][3])
         self._auth_params = auth_params
         self._auth_future = concurrent.Future()
 
@@ -153,6 +168,7 @@ class Connection(object):
         return self._auth_future
 
     def _send_auth_params(self):
+        print(inspect.stack()[1][3])
         self._set_state(constants.connection_state.AUTHENTICATING)
         raw_auth_message = message_builder.get_message(
             constants.topic.AUTH,
@@ -161,6 +177,7 @@ class Connection(object):
         self._websocket_handler.write_message(raw_auth_message.encode())
 
     def _handle_auth_response(self, message):
+        print(inspect.stack()[1][3])
         message_data = message['data']
         message_action = message['action']
         data_size = len(message_data)
@@ -196,6 +213,7 @@ class Connection(object):
             self._send_queued_messages()
 
     def _handle_connection_response(self, message):
+        print(inspect.stack()[1][3])
         action = message['action']
         data = message['data']
         if action == constants.actions.PING:
@@ -229,10 +247,12 @@ class Connection(object):
                     constants.topic.CONNECTION, data[0], data[1])
 
     def _get_auth_data(self, data):
+        print(inspect.stack()[1][3])
         if data:
             return message_parser.convert_typed(data, self._client)
 
     def _set_state(self, state):
+        print(inspect.stack()[1][3])
         self._state = state
         self._client.emit(constants.event.CONNECTION_STATE_CHANGED, state)
 
@@ -255,6 +275,7 @@ class Connection(object):
         return self._io_loop
 
     def send_message(self, topic, action, data):
+        print(inspect.stack()[1][3])
         message = message_builder.get_message(topic, action, data)
         return self.send(message)
 
@@ -263,6 +284,8 @@ class Connection(object):
 
         All messages are passed onto and handled by tornado.
         """
+        print(inspect.stack()[1][3])
+        debug_p("sending: " + raw_message)
         if not self._websocket_handler.stream.closed():
             return self._websocket_handler.write_message(raw_message.encode())
         else:
@@ -272,6 +295,7 @@ class Connection(object):
 
     @gen.coroutine
     def _send_queued_messages(self):
+        print(inspect.stack()[1][3])
         if self._state != constants.connection_state.OPEN:
             return
 
@@ -281,9 +305,11 @@ class Connection(object):
             future.set_result(result)
 
     def _on_data(self, data):
+        print(inspect.stack()[1][3])
         if data is None:
             self._on_close()
             return
+        debug_p("received: " + data)
         full_buffer = self._message_buffer + data
         split_buffer = full_buffer.rsplit(constants.message.MESSAGE_SEPERATOR,
                                           1)
@@ -305,6 +331,7 @@ class Connection(object):
                 self._client._on_message(parsed_messages[0])
 
     def _try_reconnect(self):
+        print(inspect.stack()[1][3])
         if self._reconnect_timeout is not None:
             return
 
@@ -326,16 +353,19 @@ class Connection(object):
             self.close()
 
     def _try_open(self):
+        print(inspect.stack()[1][3])
         self._url = self._original_url
         self.connect()
         self._reconnect_timeout = None
 
     def _clear_reconnect(self):
+        print(inspect.stack()[1][3])
         self._io_loop.remove_timeout(self._reconnect_timeout)
         self._reconnect_timeout = None
         self._reconnection_attempt = 0
 
     def _on_close(self):
+        print(inspect.stack()[1][3])
         self._io_loop.remove_timeout(self._heartbeat_callback)
 
         if self._redirecting:

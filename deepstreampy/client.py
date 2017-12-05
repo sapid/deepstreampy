@@ -10,6 +10,7 @@ from deepstreampy.presence import PresenceHandler
 
 from pyee import EventEmitter
 from tornado import gen
+import inspect
 
 
 @gen.coroutine
@@ -26,6 +27,7 @@ def connect(url, **options):
             the client is unable to connect, the future will have the
             appropriate exception set.
     """
+    print(inspect.stack()[1][3])
     client = Client(url, **options)
     yield client.connect()
     raise gen.Return(client)
@@ -43,6 +45,7 @@ class Client(EventEmitter):
             url (str): The url to connect to
             options
         """
+        print(inspect.stack()[1][3])
         super(Client, self).__init__()
         self._connection = connection.Connection(self, url, **options)
         self._presence = PresenceHandler(self._connection, self, **options)
@@ -77,9 +80,11 @@ class Client(EventEmitter):
                 connection is established, or raises an exception if the client
                 is unable to connect
         """
+        print(inspect.stack()[1][3])
         return self._connection.connect(callback)
 
     def close(self):
+        print(inspect.stack()[1][3])
         self._connection.close()
 
     def login(self, auth_params):
@@ -96,9 +101,11 @@ class Client(EventEmitter):
             callback (callable): Will be called with True in case of success, or
                 False, error_type, error_message in case of failure
         """
+        print(inspect.stack()[1][3])
         return self._connection.authenticate(auth_params)
 
     def _on_message(self, message):
+        print(inspect.stack()[1][3])
         if message['topic'] in self._message_callbacks:
             self._message_callbacks[message['topic']](message)
         else:
@@ -114,6 +121,7 @@ class Client(EventEmitter):
                            message['data'][0] if len(message['data']) else None)
 
     def _on_error(self, topic, event, msg=None):
+        print(inspect.stack()[1][3])
         if event in (constants.event.ACK_TIMEOUT,
                      constants.event.RESPONSE_TIMEOUT):
             if (self._connection.state ==
